@@ -1,0 +1,130 @@
+---
+# tasks file for proxmox_vm
+#
+    - name: List all QEMU virtual machines on node
+      community.proxmox.proxmox_vm_info:
+        api_host: "{{ apihost }}"
+        api_user: "{{ apiuser }}"
+        api_password: "{{ password }}"
+        node: pve
+        type: qemu
+      register: vm_info
+      delegate_to: localhost
+
+    - name: Build VM name → VMID map
+      set_fact:
+        vm_name_id_map: >-
+         {{
+          dict(
+          vm_info.proxmox_vms
+          | map(attribute='name')
+          | map('lower')
+          | zip(vm_info.proxmox_vms | map(attribute='vmid'))
+         )
+         }}
+
+    - name: Validate chosen template
+      fail:
+         msg: "Invalid template '{{ chosen_template }}'. Allowed templates: {{ template_os_map.keys() | list }}"
+      when: chosen_template not in template_os_map
+
+    - name: Normalize VM name to lowercase
+      set_fact:
+        name_vm: "{{ name_vm | lower }}"
+    - name: Validate deploy environment
+      fail:
+        msg: "Invalid environment '{{ deploy_env }}'. Use prod or dev."
+      when: deploy_env not in ['prod', 'dev']
+
+    - name: Check if VM name already exists
+      set_fact:
+        vm_exists: "{{ name_vm in vm_name_id_map.keys() }}"
+
+    - name: Clone VM from {{  chosen_template  }} template to create VM  {{ name_vm }}
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ apiuser }}"
+        api_password: "{{ password }}"
+        api_host: "{{ apihost }}"
+        clone: "{{ chosen_template }}"          # template VM name
+          #newid: "{{ newvm_id }}"          # new VMID (must NOT exist)
+        name: "{{ name_vm }}"       # new hostname
+        node: pve
+      when: not vm_exists
+      register: foo_result
+      delegate_to: localhost
+
+    - name: Finding Vm ID
+      debug:
+        var: foo_result
+
+    - name: Set VMID for existing or newly cloned VM
+      set_fact:
+        new_vmid: "{{ vm_name_id_map[name_vm] if vm_exists else foo_result.vmid }}"
+
+
+    - name: Tag the VM after creation
+      command: "qm set {{ new_vmid }} --tags ansible-managed,webservers,{{ deploy_env }},{{ template_os_map[chosen_template] }}"
+      delegate_to: "{{ apihost }}"
+
+    - name: Start VM
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ apiuser }}"
+        api_password: "{{ password }}"
+        api_host: "{{ apihost }}"
+        name: "{{ name_vm }}"
+        node: pve
+        state: started
+      delay: 5
+      delegate_to: localhost
+
+    - name: Get info about the cloned VM
+      community.proxmox.proxmox_vm_info:
+        api_host: "{{ apihost }}"
+        api_user: "{{ apiuser }}"
+        api_password: "{{ password }}"
+        node: pve
+        type: qemu
+        vmid: "{{ new_vmid }}"
+      register: vm_info
+      delegate_to: localhost
+
+    - name: Debug output
+      debug:
+        var: vm_info
+    - name: Get VM IPs via guest agent
+      command: "qm guest cmd {{ new_vmid }} network-get-interfaces"
+      retries: 20
+      delay: 10
+      register: vm_network
+      until: vm_network.rc == 0
+      delegate_to: "{{ apihost }}"
+
+    - name: Parse JSON
+      set_fact:
+        vm_ips: "{{ vm_network.stdout | from_json }}"
+    - name: Outpot
+      debug:
+        var: vm_ips
+
+    - name: Find eth0 interface
+      set_fact:
+        eth0_info: "{{ vm_ips | selectattr('name','equalto','eth0') | first }}"
+
+    - name: Extract IPv4 address from eth0
+      set_fact:
+         vm_ipv4: "{{ eth0_info['ip-addresses']
+           | selectattr('ip-address-type','equalto','ipv4')
+           | map(attribute='ip-address')
+           | first }}"
+
+    - name: Show IPv4
+      debug:
+        var: vm_ipv4
+
+    - name: Add host to multiple groups
+      ansible.builtin.add_host:
+        hostname: '{{ vm_ipv4 }}'
+        groups:
+          - webserver
+          - ansiblemanaged
+

@@ -1,0 +1,8 @@
+[proxmox]
+pve ansible_host=192.168.88.133 ansible_ssh_host_key_checking=false  ansible_python_interpreter=/usr/bin/python3
+ 
+
+[localhost]
+localhost ansible_connection=local ansible_python_interpreter=/root/ansible/ansible_venv/bin/python
+
+

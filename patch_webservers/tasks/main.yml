@@ -1,0 +1,19 @@
+---
+# tasks file for patch_webservers
+ - name: Update package cache and upgrade packages (Ubuntu)
+   ansible.builtin.apt:
+     update_cache: yes
+     upgrade: dist
+   when: ansible_facts['distribution'] == "Ubuntu"
+
+ - name: Update package cache and upgrade packages (Arch Linux)
+   ansible.builtin.pacman:
+    update_cache: yes
+    upgrade: yes
+   when: ansible_facts['distribution'] == "Archlinux"
+
+ - name: Restart web service
+   ansible.builtin.service:
+    name: "{{ 'apache2' if ansible_facts['distribution'] == 'Ubuntu' else 'httpd' }}"
+    state: restarted
+   notify: "Web service restarted"

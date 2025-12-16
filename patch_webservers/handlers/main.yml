@@ -1,0 +1,6 @@
+---
+# handlers file for patch_webservers
+- name: Web service restarted
+  ansible.builtin.debug:
+    msg: "Web service has been restarted on {{ inventory_hostname }}"
+#

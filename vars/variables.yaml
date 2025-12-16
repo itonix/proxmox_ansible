@@ -1,0 +1,11 @@
+---
+apiuser: root@pam  #proxmox user
+apipassword: "@PRoxmox@" #proxmospassword
+apihost: "192.168.88.133" #proxmost server ip
+
+
+#template_os_map:
+#  ubuntu: ubuntu
+#  archlinux: arch
+
+

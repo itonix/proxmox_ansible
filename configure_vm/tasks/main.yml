@@ -1,0 +1,48 @@
+---
+# tasks file for configure_vm
+#
+    - name: Ping the new VM
+      ansible.builtin.ping:
+    - name: Update apt cache (Ubuntu only)
+      ansible.builtin.apt:
+        update_cache: yes
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+
+
+    - name: Ensure pip is installed
+      ansible.builtin.package:
+        name: "{{ 'python3-pip' if ansible_facts['distribution'] == 'Ubuntu' else 'python-pip' }}"
+        state: present
+
+    - name: Install boto3 and botocore via apt
+      package:
+        name:
+          - "{{ 'python3-boto3' if ansible_facts['distribution'] == 'Ubuntu' else 'python-boto3' }}"
+          - "{{ 'python3-botocore' if ansible_facts['distribution'] == 'Ubuntu' else 'python-botocore' }}"
+        state: present
+        update_cache: yes
+          #become: true
+
+
+    - name: Update repositories cache and install "httpd" package
+      package:
+        name: "{{ 'apache2' if ansible_facts['distribution'] == 'Ubuntu' else 'apache' }}"
+        state: present
+        update_cache: yes
+
+    - name: Enable service apache2, and not touch the state
+      ansible.builtin.service:
+        name: "{{ 'apache2' if ansible_facts['distribution'] == 'Ubuntu' else 'httpd' }}"
+        state: restarted
+        enabled: yes
+
+    - name: Simple GET operation
+      amazon.aws.s3_object:
+        bucket: "{{ s3_bucket }}"
+        object: "{{ s3_file }}"
+        dest: "{{ '/var/www/html/index.html' if ansible_facts['distribution'] == 'Ubuntu' else '/srv/http/index.html' }}"
+        mode: get
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"

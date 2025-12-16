@@ -1,0 +1,22 @@
+---
+- name: Provision Proxmox VMs
+  hosts: proxmox
+  vars_files:
+    - "../vars/variables.yaml"
+  vars_prompt:
+    - name: password
+      prompt: What is your proxmox server api password?
+    - name: chosen_template
+      prompt: "Enter the template to use (archlinux/ubuntu)"
+      private: no
+    - name: name_vm
+      prompt: "Enter the name of VM to create"
+      private: no
+    - name: deploy_env
+      prompt: "Deploy environment? (prod/dev)"
+      private: no
+      default: dev
+
+  roles:
+    - proxmox_vm
+

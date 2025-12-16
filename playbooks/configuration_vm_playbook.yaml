@@ -1,0 +1,11 @@
+- name: Configure newly created VM
+  hosts: _webservers
+  vars_files:
+    - /root/ansible/vars/variables.yaml
+  tags: [configuration]
+  become: true
+  gather_facts: yes
+  roles:
+    - configure_vm  
+
+
