@@ -172,12 +172,12 @@ Notes:
 
 
 ## python environment setting : 
-
+```
 root@ansible:~/ansible# python3 -m venv ansible_venv
 root@ansible:~/ansible# source ansible_venv/bin/activate
 (ansible_venv) root@ansible:~/ansible#  pip install ansible proxmoxer requests
 
-
+```
 ---
 
 ## Playbooks
