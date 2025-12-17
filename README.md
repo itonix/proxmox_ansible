@@ -4,6 +4,8 @@ This repository contains a **multi-role Ansible project** for provisioning, conf
 
 lab architecture:
 
+
+```
 ┌─────────────────────────────────────────────┐
 │               Windows Laptop                │
 │                                             │
@@ -40,7 +42,7 @@ lab architecture:
 └─────────────────────────────────────────────┘
 
 
-
+```
 
 It is structured the way real infrastructure code is structured: roles are small and focused, inventories are explicit, and playbooks describe intent rather than implementation.
 
