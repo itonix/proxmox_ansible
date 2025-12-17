@@ -4,8 +4,8 @@
   vars_files:
     - "../vars/variables.yaml"
   vars_prompt:
-    - name: password
-      prompt: What is your proxmox server api password?
+    #- name: password
+    #  prompt: What is your proxmox server api password?
     - name: chosen_template
       prompt: "Enter the template to use (archlinux/ubuntu)"
       private: no

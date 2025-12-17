@@ -1,7 +1,9 @@
 plugin: community.proxmox.proxmox
 url: https://192.168.88.133:8006
 user: root@pam
-password: "@TOny12@"
+  #password: "root"
+token_id: mytest123
+token_secret: daa4af18-c224-4ed1-a4fe-c3ecec23cbc0
 validate_certs: false
 want_facts: true
 

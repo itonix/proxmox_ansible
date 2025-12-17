@@ -1,10 +1,12 @@
 ---
 # vars file for configure_vm
 #
-apiuser: root@pam  #proxmox user
-apipassword: "@PRoxmox@" #proxmospassword
-apihost: "192.168.88.133" #proxmost server ip
-  #newvm_id: 202  #id of vm to create
+#
+apiuser: root@pam
+apitokensecret: daa4af18-c224-4ed1-a4fe-c3ecec23cbc0
+apihost: "192.168.88.133"
+apitokenid: mytest123
+  #apipassword: "@PRoxmox@" #proxmospassword
   #name_vm: Moba  #name of vm to create
 s3_bucket: freebucketts
 s3_file: index.html

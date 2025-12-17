@@ -5,7 +5,9 @@
       community.proxmox.proxmox_vm_info:
         api_host: "{{ apihost }}"
         api_user: "{{ apiuser }}"
-        api_password: "{{ password }}"
+        #api_password: "{{ password }}"
+        api_token_id: "{{ apitokenid }}"
+        api_token_secret: "{{ apitokensecret }}"
         node: pve
         type: qemu
       register: vm_info
@@ -43,7 +45,9 @@
     - name: Clone VM from {{  chosen_template  }} template to create VM  {{ name_vm }}
       community.proxmox.proxmox_kvm:
         api_user: "{{ apiuser }}"
-        api_password: "{{ password }}"
+        #api_password: "{{ password }}"
+        api_token_id: "{{ apitokenid }}"
+        api_token_secret: "{{ apitokensecret }}"
         api_host: "{{ apihost }}"
         clone: "{{ chosen_template }}"          # template VM name
           #newid: "{{ newvm_id }}"          # new VMID (must NOT exist)
@@ -69,7 +73,9 @@
     - name: Start VM
       community.proxmox.proxmox_kvm:
         api_user: "{{ apiuser }}"
-        api_password: "{{ password }}"
+        #api_password: "{{ password }}"
+        api_token_id: "{{ apitokenid }}"
+        api_token_secret: "{{ apitokensecret }}"
         api_host: "{{ apihost }}"
         name: "{{ name_vm }}"
         node: pve
@@ -81,7 +87,9 @@
       community.proxmox.proxmox_vm_info:
         api_host: "{{ apihost }}"
         api_user: "{{ apiuser }}"
-        api_password: "{{ password }}"
+          #api_password: "{{ password }}"
+        api_token_id: "{{ apitokenid }}"
+        api_token_secret: "{{ apitokensecret }}"
         node: pve
         type: qemu
         vmid: "{{ new_vmid }}"

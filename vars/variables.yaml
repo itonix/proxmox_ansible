@@ -1,11 +1,22 @@
 ---
-apiuser: root@pam  #proxmox user
-apipassword: "@PRoxmox@" #proxmospassword
-apihost: "192.168.88.133" #proxmost server ip
-
-
+#apipassword: "@PRoxmox@" #proxmospassword
+apiuser: root@pam
+#apitokensecret: "f5b83ddf-2908-42b2-a61c-013a3937068f"
+#apihost: "192.168.88.133"
 #template_os_map:
 #  ubuntu: ubuntu
 #  archlinux: arch
+#
+#
+#
+#
+apitokenid: mytest123
+apitokensecret: daa4af18-c224-4ed1-a4fe-c3ecec23cbc0
+apihost: "192.168.88.133"
+
+template_os_map:
+  ubuntu: ubuntu
+  archlinux: arch
+
 
 

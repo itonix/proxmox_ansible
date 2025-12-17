@@ -1,9 +1,21 @@
 
 # vars file for proxmox_vm
 ---
-apiuser: root@pam  #proxmox user
-apipassword: "@PRoxmox@" #proxmospassword
-apihost: "192.168.88.133" #proxmost server ip
+apitokenid: mytest123
+apitokensecret: daa4af18-c224-4ed1-a4fe-c3ecec23cbc0
+apihost: "192.168.88.133"
+apiuser: root@pam
+template_os_map:
+  ubuntu: ubuntu
+  archlinux: arch
+
+
+
+
+#apiuser: "root@pam!RKJWHUFRP12QQ"
+  #apitokensecret: "f5b83ddf-2908-42b2-a61c-013a3937068f"
+  #apihost: "192.168.88.133"
+  
   #newvm_id: 202  #id of vm to create
   #name_vm: Moba  #name of vm to create
 s3_bucket: freebucketts
@@ -11,6 +23,6 @@ s3_file: index.html
 dest_path: /var/www/html/index.html
 
 
-template_os_map:
-  ubuntu: ubuntu
-  archlinux: arch
+  #template_os_map:
+  #ubuntu: ubuntu
+  #archlinux: arch
