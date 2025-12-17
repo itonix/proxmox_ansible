@@ -224,16 +224,11 @@ Safely applies updates and restarts services when required.
 * **Separation of concerns** — Proxmox ≠ Guest OS ≠ App maintenance
 * **Idempotency** — repeatable without surprises
 * **Readable over clever** — infrastructure is a liability, not a puzzle
+* **Ansible is strictl to indentation syntax and variable prescedence
 
 This repository is meant to be understood at 2 a.m. during an incident.
 
 ---
-
-## Security Notes
-
-* Never commit API tokens
-* You may use Ansible Vault for secrets
-* Use least-privilege roles in Proxmox
 
 ---
 Proxmos   gui:
